@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+streamlit
+httpx
+pydantic
+google-generativeai
+langchain
+langfuse
+loguru
+python-dotenv
+langchain-openai
+streamlit-lottie
