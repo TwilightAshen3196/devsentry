@@ -4,6 +4,7 @@ streamlit
 httpx
 pydantic
 google-generativeai
+langchain-google-genai
 langchain
 langfuse
 loguru
