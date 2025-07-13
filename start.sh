@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Acitvate virtual python environment (change by your path for environemnt)
-. .../venv/bin/activate
+. ../venv/bin/activate
 
 # install requirements to environment
 pip3 install -r requirements
