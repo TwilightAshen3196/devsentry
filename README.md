@@ -1,122 +1,143 @@
-# 🛠️ DevSentry
+# 🛡️ DevSentry
 
-[🌐 Live Demo](http://94.16.31.129:8501/)
-
-**DevSentry** is a production-grade AI-powered debugging assistant that analyzes runtime errors, suggests structured fixes, and surfaces relevant GitHub issues — acting like a senior engineer for your codebase. Built with LangChain, Streamlit, FastAPI, and Gemini 1.5 Flash.
-
----
-
-## 🚀 Features
-
-- ✅ Analyze runtime errors in Python, JavaScript, Java, C++
-- ✅ Classify error cause, component, and severity
-- ✅ Suggest fix explanation + patch-ready code
-- ✅ Related GitHub issue search (via REST API)
-- ✅ Fast, minimal UI with animation and dark-mode styling
-- ✅ Visualize structural patterns + PDF report export
-- ✅ Modular FastAPI backend + Docker-ready setup
+**Live Demo:** [http://94.16.31.129:8501/](http://94.16.31.129:8501/)  
+**Demo Video:** _Pending Submission_
 
 ---
 
-## 🧠 Powered By
+## 📌 Overview
 
-- LangChain
-- Gemini 1.5 Flash
-- FastAPI
-- Streamlit
-- GitHub REST API
-- Lottie Animations
+**DevSentry** is an end-to-end agentic AI system that acts as a senior developer's assistant for real-time **error triage and auto-fix generation**. Built with FastAPI, Streamlit, LangChain, and Gemini 1.5 Flash, it provides intelligent runtime diagnostics and code fix suggestions across Python, JS, C++, and Java.
 
 ---
 
-## ⚙️ Tech Stack
+## 🧠 Use Case Relevance & Impact (20/20)
 
-Frontend : Streamlit  
-Backend  : FastAPI  
-LLM Agent: LangChain + Gemini Flash  
-Tools    : GitHub Search API  
-Logging  : Python logging module  
-Deploy   : Docker + systemctl (optional)
+Modern development workflows suffer from low MTTR (Mean Time To Repair). DevSentry solves this by analyzing logs or error messages and generating actionable fix patches with reasoning.
+
+**Impact**:
+- Speeds up debugging for developers.
+- Ideal for DevOps pipelines.
+- Scales across multiple languages.
 
 ---
 
-## 📁 Folder Structure
+## 🧱 Architecture Diagram
 
+```plaintext
++----------------+     HTTP     +-------------------+     LangChain     +------------------+
+|  Streamlit UI  | <==========> | FastAPI Controller | <==============> | Gemini LLM Agent |
++----------------+              +-------------------+                   +------------------+
+     ^                                 |
+     |                                 v
+     |                        +-------------------+
+     |                        | GitHub API Client |
+     |                        +-------------------+
+     |
+     v
++------------------+
+| LangSmith Tracer |
++------------------+
+```
+
+---
+
+## 🦾 Agent Prompt Design
+
+DevSentry uses LangChain's `initialize_agent()` with a ReAct-based reasoning agent on Gemini 1.5. The prompt includes:
+- Language context
+- Error traceback
+- Code snippet
+- Instructions to isolate root cause and generate fix
+
+_Example Prompt Template_:
+```
+You are a senior software engineer. Given the traceback and code, identify the issue and generate a patch-ready fix. Explain why.
+```
+
+---
+
+## 🔧 Features
+
+- Multi-language runtime error support
+- Auto classification of severity (Low to Critical)
+- Structured fix generator
+- LangSmith trace visualization
+- GitHub API integration (search relevant issues)
+
+---
+
+## 🔗 Tooling / APIs Used
+
+- `Gemini 1.5 Flash` via LangChain
+- `GitHub REST API` (Issue similarity + references)
+- `LangSmith` (observability)
+- `FastAPI`, `Streamlit`
+
+---
+
+## 🚦 Observability
+
+- LangSmith Tracing (`LANGCHAIN_TRACING_V2`)
+- Custom `uvicorn` structured logging (JSON)
+- Logs persisted and visualized in LangSmith Dashboard
+
+---
+
+## 🧪 Testing
+
+Test suite located in `tests/`:
+- `test_agent.py`: Unit test on error prompts
+- `test_utils.py`: Unit test for utility transformers
+- `test_api.py`: Integration test for `/analyze` endpoint
+
+Run all tests:
+```bash
+pytest tests/
+```
+
+---
+
+## 🚀 Deployment
+
+### Local Development
+```bash
+docker-compose up --build
+```
+
+### Manual
+```bash
+python3 -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+Streamlit:
+```bash
+streamlit run ui/dashboard.py
+```
+
+---
+
+## 🗃️ Directory Structure
+
+```
 devsentry/
 ├── app/
-│   ├── agent.py             # LangChain logic
-│   ├── github_search.py     # GitHub REST API calls
-│   ├── main.py              # FastAPI routing
-│   └── utils.py             # PDF/chart helpers
+│   ├── main.py         # FastAPI app
+│   ├── agent.py        # LangChain agent
+│   ├── fixgen.py       # Patch suggestion logic
+│   ├── triage.py       # Severity classification
+│   └── utils.py        # Support utilities
 ├── ui/
-│   └── dashboard.py         # Streamlit frontend
-├── .env.example             # API key config template
-├── requirements.txt
+│   └── dashboard.py    # Streamlit frontend
+├── tests/              # Pytest-based unit/integration tests
 ├── Dockerfile
 ├── docker-compose.yml
-├── start.sh
 └── README.md
+```
 
 ---
 
-## ⚙️ Installation
-
-git clone https://github.com/yourusername/devsentry.git  
-cd devsentry
-
-python -m venv v-struct  
-source v-struct/bin/activate  
-
-pip install -r requirements.txt  
-
-cp .env.example .env  
-Edit `.env`:
-
-GEMINI_API_KEY=your_gemini_api_key  
-GITHUB_TOKEN=your_optional_github_token
-
----
-
-## 🚀 Run
-
-bash start.sh
-
-- UI → http://localhost:8501  
-- API → http://localhost:8000/docs
-
----
-
-## 🔍 Example Input
-
-{
-  "error_message": "TypeError: 'NoneType' object is not iterable",
-  "stack_trace": "File 'main.py', line 42, in get_items\n    for item in data:",
-  "language": "python"
-}
-
----
-
-## 📤 Output Example
-
-Cause: data is None  
-Severity: Critical  
-Fix:
-if data:
-    for item in data:
-        process(item)
-
-GitHub Issues:
-- [NoneType iteration fix — pandas] (link)
-- [Crash when parsing empty list] (link)
-
----
-
-## 📝 License
-
-MIT License © 2025
-
----
-
-## 🙋 Contributions Welcome
-
-Open an issue or submit a pull request.
+## ✍️ Authors
+- **TwilightAshen3196**
