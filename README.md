@@ -2,122 +2,121 @@
 
 [🌐 Live Demo](http://94.16.31.129:8501/)
 
-**DevSentry** is a production-grade, AI-powered error triage assistant that detects, analyzes, and suggests fixes for runtime errors across multiple languages. It combines FastAPI, Streamlit, and Gemini 1.5 Flash (via LangChain) to act like a senior developer sitting next to you.
+**DevSentry** is a production-grade AI-powered debugging assistant that analyzes runtime errors, suggests structured fixes, and surfaces relevant GitHub issues — acting like a senior engineer for your codebase. Built with LangChain, Streamlit, FastAPI, and Gemini 1.5 Flash.
 
 ---
 
 ## 🚀 Features
 
-- ✅ Analyze errors in Python, JavaScript, Java, C++
-- ✅ Suggest structured, patch-ready code fixes
-- ✅ Severity classification (Low → Critical)
-- ✅ Gemini 1.5 Flash integration via LangChain
-- ✅ Beautiful, animated Streamlit UI
-- ✅ One-click API + UI startup
+- ✅ Analyze runtime errors in Python, JavaScript, Java, C++
+- ✅ Classify error cause, component, and severity
+- ✅ Suggest fix explanation + patch-ready code
+- ✅ Related GitHub issue search (via REST API)
+- ✅ Fast, minimal UI with animation and dark-mode styling
+- ✅ Visualize structural patterns + PDF report export
+- ✅ Modular FastAPI backend + Docker-ready setup
 
 ---
 
 ## 🧠 Powered By
 
-- [LangChain](https://github.com/langchain-ai/langchain)
-- [Gemini 1.5 Flash](https://ai.google.dev/)
-- [FastAPI](https://fastapi.tiangolo.com/)
-- [Streamlit](https://streamlit.io/)
-- [Lottie](https://lottiefiles.com/) animations
+- LangChain
+- Gemini 1.5 Flash
+- FastAPI
+- Streamlit
+- GitHub REST API
+- Lottie Animations
 
 ---
 
-## 📦 Tech Stack
+## ⚙️ Tech Stack
 
-| Layer     | Tech                     |
-|-----------|--------------------------|
-| Frontend  | `Streamlit`              |
-| Backend   | `FastAPI` + `LangChain`  |
-| LLM       | `Gemini 1.5 Flash`       |
-| API Agent | `RunnableMap` + Prompt Templates |
-| Styling   | CSS + HTML + Lottie      |
-
----
-
-## ⚙️ Installation
-
-1. **Clone the repository**
-```bash
-git clone https://github.com/yourname/devsentry.git
-cd devsentry
-```
-
-2. **Install dependencies**
-```bash
-pip install -r requirements.txt
-```
-
-3. **Create a `.env` file**
-```env
-GEMINI_API_KEY=your_gemini_key_here
-```
-
-4. **Run DevSentry**
-```bash
-bash start.sh
-```
-
-- Backend: [http://localhost:8000](http://localhost:8000)
-- UI: [http://localhost:8501](http://localhost:8501)
-
----
-
-## 🔍 Example Input
-
-```json
-{
-  "error_message": "TypeError: 'NoneType' object is not iterable",
-  "stack_trace": "File 'main.py', line 42, in get_items\n    for item in data:\nTypeError: 'NoneType' object is not iterable",
-  "language": "python"
-}
-```
-
----
-
-## 📤 Output Preview
-
-- Cause: `data` is `None` — cannot iterate a null object
-- Severity: 🔴 High
-- Fix:
-```python
-if data:
-    for item in data:
-        process(item)
-```
+Frontend : Streamlit  
+Backend  : FastAPI  
+LLM Agent: LangChain + Gemini Flash  
+Tools    : GitHub Search API  
+Logging  : Python logging module  
+Deploy   : Docker + systemctl (optional)
 
 ---
 
 ## 📁 Folder Structure
 
-```
 devsentry/
-├── app/                # FastAPI backend
-│   ├── agent.py
-│   ├── main.py
-│   ├── triage.py
-│   ├── fixgen.py
-│   └── schemas.py
-├── ui/                 # Streamlit frontend
-│   └── dashboard.py
+├── app/
+│   ├── agent.py             # LangChain logic
+│   ├── github_search.py     # GitHub REST API calls
+│   ├── main.py              # FastAPI routing
+│   └── utils.py             # PDF/chart helpers
+├── ui/
+│   └── dashboard.py         # Streamlit frontend
+├── .env.example             # API key config template
+├── requirements.txt
+├── Dockerfile
+├── docker-compose.yml
 ├── start.sh
-├── .env
-├── README.md
-└── requirements.txt
-```
+└── README.md
 
 ---
 
-## 📄 License
+## ⚙️ Installation
+
+git clone https://github.com/yourusername/devsentry.git  
+cd devsentry
+
+python -m venv v-struct  
+source v-struct/bin/activate  
+
+pip install -r requirements.txt  
+
+cp .env.example .env  
+Edit `.env`:
+
+GEMINI_API_KEY=your_gemini_api_key  
+GITHUB_TOKEN=your_optional_github_token
+
+---
+
+## 🚀 Run
+
+bash start.sh
+
+- UI → http://localhost:8501  
+- API → http://localhost:8000/docs
+
+---
+
+## 🔍 Example Input
+
+{
+  "error_message": "TypeError: 'NoneType' object is not iterable",
+  "stack_trace": "File 'main.py', line 42, in get_items\n    for item in data:",
+  "language": "python"
+}
+
+---
+
+## 📤 Output Example
+
+Cause: data is None  
+Severity: Critical  
+Fix:
+if data:
+    for item in data:
+        process(item)
+
+GitHub Issues:
+- [NoneType iteration fix — pandas] (link)
+- [Crash when parsing empty list] (link)
+
+---
+
+## 📝 License
 
 MIT License © 2025
 
 ---
 
-## 🙋 Questions or Contributions?
+## 🙋 Contributions Welcome
 
-Open an issue or submit a pull request — contributions are welcome.
+Open an issue or submit a pull request.
