@@ -86,7 +86,7 @@ def severity_badge(severity):
 if submitted:
     with st.spinner("Analyzing error..."):
         try:
-            res = requests.post("http://localhost:8000/analyze", json={
+            res = requests.post("http://localhost:8005/analyze", json={
                 "error_message": code_input,
                 "stack_trace": stack_input,
                 "language": lang_input
