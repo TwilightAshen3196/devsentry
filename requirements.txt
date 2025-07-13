@@ -11,3 +11,5 @@ loguru
 python-dotenv
 langchain-openai
 streamlit-lottie
+python-multipart
+matplotlib
