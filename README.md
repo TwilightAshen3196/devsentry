@@ -5,13 +5,13 @@
 
 ---
 
-## 📌 Overview
+## Overview
 
 **DevSentry** is an end-to-end agentic AI system that acts as a senior developer's assistant for real-time **error triage and auto-fix generation**. Built with FastAPI, Streamlit, LangChain, and Gemini 1.5 Flash, it provides intelligent runtime diagnostics and code fix suggestions across Python, JS, C++, and Java.
 
 ---
 
-## 🧠 Use Case Relevance & Impact (20/20)
+## Use Case Relevance & Impact (20/20)
 
 Modern development workflows suffer from low MTTR (Mean Time To Repair). DevSentry solves this by analyzing logs or error messages and generating actionable fix patches with reasoning.
 
@@ -22,7 +22,7 @@ Modern development workflows suffer from low MTTR (Mean Time To Repair). DevSent
 
 ---
 
-## 🧱 Architecture Diagram
+## Architecture Diagram
 
 ```plaintext
 +----------------+     HTTP     +-------------------+     LangChain     +------------------+
@@ -42,7 +42,7 @@ Modern development workflows suffer from low MTTR (Mean Time To Repair). DevSent
 
 ---
 
-## 🦾 Agent Prompt Design
+## Agent Prompt Design
 
 DevSentry uses LangChain's `initialize_agent()` with a ReAct-based reasoning agent on Gemini 1.5. The prompt includes:
 - Language context
@@ -57,7 +57,7 @@ You are a senior software engineer. Given the traceback and code, identify the i
 
 ---
 
-## 🔧 Features
+## Features
 
 - Multi-language runtime error support
 - Auto classification of severity (Low to Critical)
@@ -67,7 +67,7 @@ You are a senior software engineer. Given the traceback and code, identify the i
 
 ---
 
-## 🔗 Tooling / APIs Used
+## Tooling / APIs Used
 
 - `Gemini 1.5 Flash` via LangChain
 - `GitHub REST API` (Issue similarity + references)
@@ -76,7 +76,7 @@ You are a senior software engineer. Given the traceback and code, identify the i
 
 ---
 
-## 🚦 Observability
+## Observability
 
 - LangSmith Tracing (`LANGCHAIN_TRACING_V2`)
 - Custom `uvicorn` structured logging (JSON)
@@ -84,7 +84,7 @@ You are a senior software engineer. Given the traceback and code, identify the i
 
 ---
 
-## 🧪 Testing
+## Testing
 
 Test suite located in `tests/`:
 - `test_agent.py`: Unit test on error prompts
@@ -98,7 +98,7 @@ pytest tests/
 
 ---
 
-## 🚀 Deployment
+## Deployment
 
 ### Local Development
 ```bash
@@ -119,7 +119,7 @@ streamlit run ui/dashboard.py
 
 ---
 
-## 🗃️ Directory Structure
+## Directory Structure
 
 ```
 devsentry/
