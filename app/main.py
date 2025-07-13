@@ -1,20 +1,28 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from fastapi import FastAPI, Form
+from fastapi.middleware.cors import CORSMiddleware
 from app.agent import process_error
 import logging
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(name)s | %(message)s"
+)
+
 app = FastAPI()
 
-class ErrorReport(BaseModel):
-    error_message: str
-    stack_trace: str
-    language: str = "python"
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/analyze")
-async def analyze_error(payload: ErrorReport):
-    try:
-        result = await process_error(payload)
-        return result
-    except Exception as e:
-        logging.error(f"Error in analysis: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+def analyze_error(
+    error_message: str = Form(...),
+    stack_trace: str = Form(...),
+    language: str = Form(...)
+):
+    logging.info(f"Analysis requested | Lang: {language} | Error: {error_message[:60]}")
+    return process_error(error_message, stack_trace, language)
