@@ -136,4 +136,21 @@ if st.button("🚀 Analyze Error", use_container_width=True):
                 st.button("👎 No", use_container_width=True)
 
         except Exception as e:
-            st.error(f"❌ API request failed: {e}")
+            st.error(f"❌ API request failed: {e}"
+
+# === DEMO BUTTON ===
+with st.expander("🔁 Try Demo Example"):
+    if st.button("Load Sample Error"):
+        st.session_state['demo_loaded'] = True
+
+if st.session_state.get('demo_loaded'):
+    st.session_state['code'] = "def divide(x, y):\n    return x / y\n\nresult = divide(1, 0)"
+    st.session_state['stack'] = "ZeroDivisionError: division by zero\nFile \"main.py\", line 2, in divide"
+    st.session_state['lang'] = "Python"
+
+# Use session_state variables in form if available
+code = st.session_state.get("code", "")
+stack = st.session_state.get("stack", "")
+lang = st.session_state.get("lang", "Python")
+
+)
