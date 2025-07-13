@@ -11,7 +11,7 @@
 
 ---
 
-## Use Case Relevance & Impact (20/20)
+## Use Case & Impact
 
 Modern development workflows suffer from low MTTR (Mean Time To Repair). DevSentry solves this by analyzing logs or error messages and generating actionable fix patches with reasoning.
 
