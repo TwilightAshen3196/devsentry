@@ -21,6 +21,18 @@ st.markdown("""
     <style>
     .title { font-size: 3em; font-weight: 800; text-align: center; color: #FF4B4B; }
     .subtitle { font-size: 1.2em; text-align: center; color: #666; margin-bottom: 2em; }
+    .badge {
+        display: inline-block;
+        padding: 0.4em 0.75em;
+        border-radius: 6px;
+        font-weight: bold;
+        color: white;
+        font-size: 0.9em;
+    }
+    .green { background-color: #4CAF50; }
+    .yellow { background-color: #FFC107; }
+    .orange { background-color: #FF9800; }
+    .red { background-color: #F44336; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -57,6 +69,20 @@ with st.form("error_form"):
 
     submitted = st.form_submit_button("Analyze")
 
+# === SEVERITY TO COLOR ===
+def severity_badge(severity):
+    level = severity.lower()
+    if level == "low":
+        return '<span class="badge green">LOW</span>'
+    elif level == "medium":
+        return '<span class="badge yellow">MEDIUM</span>'
+    elif level == "high":
+        return '<span class="badge orange">HIGH</span>'
+    elif level == "critical":
+        return '<span class="badge red">CRITICAL</span>'
+    else:
+        return f'<span class="badge">{severity.upper()}</span>'
+
 if submitted:
     with st.spinner("Analyzing error..."):
         try:
@@ -75,7 +101,9 @@ if submitted:
             classification = result.get("classification", {})
             st.markdown(f"- **Cause**: `{classification.get('cause', '-')}`")
             st.markdown(f"- **Component**: `{classification.get('component', '-')}`")
-            st.markdown(f"- **Severity**: `{classification.get('severity', '-')}`")
+
+            severity = classification.get("severity", "-")
+            st.markdown("**Severity**: " + severity_badge(severity), unsafe_allow_html=True)
 
             # === FIX SUGGESTION OUTPUT ===
             st.subheader("🛠 Fix Suggestion")
