@@ -1,6 +1,6 @@
 import streamlit as st
 import requests
-import time
+import json
 from streamlit_lottie import st_lottie
 import requests as rqs
 
@@ -16,57 +16,48 @@ def load_lottieurl(url: str):
 
 lottie_bot = load_lottieurl("https://assets4.lottiefiles.com/packages/lf20_pprxh53t.json")
 
-# === CUSTOM CSS ===
+# === CSS ===
 st.markdown("""
     <style>
-    .title {
-        font-size: 3em;
-        font-weight: 800;
-        text-align: center;
-        color: #FF4B4B;
-        margin-bottom: 0.1em;
-    }
-    .subtitle {
-        font-size: 1.2em;
-        text-align: center;
-        color: #666;
-        margin-bottom: 1.5em;
-    }
-    .card {
-        padding: 1.2em;
-        border-radius: 12px;
-        margin-bottom: 1em;
-        background-color: #fafafa;
-        border: 1px solid #eee;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-    }
+    .title { font-size: 3em; font-weight: 800; text-align: center; color: #FF4B4B; }
+    .subtitle { font-size: 1.2em; text-align: center; color: #666; margin-bottom: 2em; }
     </style>
 """, unsafe_allow_html=True)
 
-# === HEADER ===
 st.markdown('<div class="title">DevSentry</div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle">AI-Powered Error Triage & Auto-Fix Assistant</div>', unsafe_allow_html=True)
 st_lottie(lottie_bot, height=180, key="bot")
 
-# === DEMO BUTTON ===
-if "demo_loaded" not in st.session_state:
-    st.session_state.demo_loaded = False
+# === DEMO PAYLOAD ===
+demo_code = "def divide(x, y):\n    return x / y\n\nresult = divide(1, 0)"
+demo_stack = "ZeroDivisionError: division by zero\nFile \"main.py\", line 2, in divide"
+demo_lang = "Python"
 
-if st.button("🔁 Load Demo Error"):
-    st.session_state.code = "def divide(x, y):\n    return x / y\n\nresult = divide(1, 0)"
-    st.session_state.stack = "ZeroDivisionError: division by zero\nFile \"main.py\", line 2, in divide"
+if "code" not in st.session_state:
+    st.session_state.code = ""
+if "stack" not in st.session_state:
+    st.session_state.stack = ""
+if "lang" not in st.session_state:
     st.session_state.lang = "Python"
-    st.session_state.demo_loaded = True
 
-# === FORM ===
+# === DEMO BUTTON ===
+if st.button("🔁 Load Demo Error"):
+    st.session_state.code = demo_code
+    st.session_state.stack = demo_stack
+    st.session_state.lang = demo_lang
+
+# === FORM INPUT ===
 st.subheader("🔍 Paste Error Details")
 
-code_input = st.text_area("Paste the Code Causing Error", value=st.session_state.get("code", ""))
-stack_input = st.text_area("Paste the Stack Trace", value=st.session_state.get("stack", ""))
-lang_input = st.selectbox("Select Language", ["Python", "JavaScript", "Java", "C++"], 
-                          index=["Python", "JavaScript", "Java", "C++"].index(st.session_state.get("lang", "Python")))
+with st.form("error_form"):
+    code_input = st.text_area("Paste the Code Causing Error", value=st.session_state.code)
+    stack_input = st.text_area("Paste the Stack Trace", value=st.session_state.stack)
+    lang_input = st.selectbox("Select Language", ["Python", "JavaScript", "Java", "C++"],
+                              index=["Python", "JavaScript", "Java", "C++"].index(st.session_state.lang))
 
-if st.button("Analyze"):
+    submitted = st.form_submit_button("Analyze")
+
+if submitted:
     with st.spinner("Analyzing error..."):
         try:
             res = requests.post("http://localhost:8000/analyze", json={
@@ -76,7 +67,22 @@ if st.button("Analyze"):
             })
             res.raise_for_status()
             result = res.json()
-            st.success("Analysis completed.")
-            st.json(result)
+
+            st.success("Analysis Completed")
+
+            # === CLASSIFICATION OUTPUT ===
+            st.subheader("📍 Classification")
+            classification = result.get("classification", {})
+            st.markdown(f"- **Cause**: `{classification.get('cause', '-')}`")
+            st.markdown(f"- **Component**: `{classification.get('component', '-')}`")
+            st.markdown(f"- **Severity**: `{classification.get('severity', '-')}`")
+
+            # === FIX SUGGESTION OUTPUT ===
+            st.subheader("🛠 Fix Suggestion")
+            fix = result.get("fix_suggestion", {})
+            st.markdown(f"**Explanation:**\n\n{fix.get('explanation', '-')}")
+            st.markdown(f"**Suggested Fix:**\n\n{fix.get('fix', '-')}")
+            st.code(fix.get("code", ""), language=lang_input.lower())
+
         except Exception as e:
             st.error(f"Analysis failed: {e}")
