@@ -1,6 +1,6 @@
 # 🛠️ DevSentry
 
-[🌐 Live Demo](http://152.53.225.240:8501/)
+[🌐 Live Demo](http://94.16.31.129:8501/)
 
 **DevSentry** is a production-grade, AI-powered error triage assistant that detects, analyzes, and suggests fixes for runtime errors across multiple languages. It combines FastAPI, Streamlit, and Gemini 1.5 Flash (via LangChain) to act like a senior developer sitting next to you.
 
