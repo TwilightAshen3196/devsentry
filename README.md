@@ -139,5 +139,5 @@ devsentry/
 
 ---
 
-## ✍️ Authors
+## Authors
 - **TwilightAshen3196**
