@@ -1,6 +1,6 @@
 # 🛡️ DevSentry
 
-**Live Demo:** [http://94.16.31.129:8501/](http://94.16.31.129:8501/)  
+**Live Demo:** [Streamlit - DevSentry](http://94.16.31.129:8505/)  
 **Demo Video:** _Pending Submission_
 
 ---
