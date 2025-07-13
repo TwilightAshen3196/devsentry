@@ -13,3 +13,4 @@ langchain-openai
 streamlit-lottie
 python-multipart
 matplotlib
+fpdf
