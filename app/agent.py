@@ -1,8 +1,12 @@
 import os
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.prompts import ChatPromptTemplate
-from app.github_search import search_github_issues
 from dotenv import load_dotenv
+from app.triage import classify_error
+from app.fixgen import generate_fix
+from app.schemas import ErrorReportSchema
+from langchain_core.runnables import RunnableMap
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain.callbacks.tracers import LangChainTracer
+from langchain.callbacks import tracing_v2_enabled
 
 load_dotenv()
 
@@ -14,40 +18,18 @@ def get_llm():
         model_kwargs={"stream": False}
     )
 
-def process_error(error, stack, lang):
-    prompt = ChatPromptTemplate.from_template("""
-You are an AI programming assistant. 
-Classify the cause, component, and severity of the following error.
-Return response as a JSON with keys: cause, component, severity.
+async def process_error(report: ErrorReportSchema):
+    llm = get_llm()
+    chain = RunnableMap({
+        "classification": lambda x: classify_error(llm, x),
+        "fix_suggestion": lambda x: generate_fix(llm, x)
+    })
 
-Error Message:
-{error}
-
-Stack Trace:
-{stack}
-""")
-    classification_chain = prompt | get_llm()
-    classification = classification_chain.invoke({"error": error, "stack": stack})
-
-    fix_prompt = ChatPromptTemplate.from_template("""
-You are an expert software engineer.
-
-Explain and fix the following error and stack trace in {lang}. 
-Return response as a JSON with keys: explanation, fix, code.
-
-Error Message:
-{error}
-
-Stack Trace:
-{stack}
-""")
-    fix_chain = fix_prompt | get_llm()
-    fix_suggestion = fix_chain.invoke({"error": error, "stack": stack, "lang": lang})
-
-    github_results = search_github_issues(error)
-
-    return {
-        "classification": classification,
-        "fix_suggestion": fix_suggestion,
-        "github_issues": github_results
+    inputs = {
+        "error": report.error_message.strip(),
+        "stack": report.stack_trace.strip(),
+        "lang": report.language.lower().strip()
     }
+
+    with tracing_v2_enabled(project_name="devsentry"):
+        return await chain.ainvoke(inputs)
